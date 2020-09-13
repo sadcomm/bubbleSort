@@ -11,18 +11,13 @@ import java.util.Random;
 public class BasicServlet extends HttpServlet {
 
     final Random random = new Random();
-    String generatedSeq = "";
+    private int N = 10;
+    private int[] generatedSeq = new int[N];
 
-    private void generateNums(){            //Генерируем значения для исходного массива
-        generatedSeq = "";
-        for (int i =0; i<10;i++)
+    public void generateNums(){            //Генерируем значения для исходного массива
+        for(int i = 0; i<N; i++)
         {
-            if(i==9)
-            {
-                generatedSeq += String.valueOf(random.nextInt(100)+1);
-            }else {
-                generatedSeq += String.valueOf(random.nextInt(100)+1) + ", ";
-            }
+            generatedSeq[i] = random.nextInt(100)+1;
         }
     }
 
@@ -32,7 +27,8 @@ public class BasicServlet extends HttpServlet {
         System.out.println("URL is: " + url);
         if(url.equals("/BubbleSort")){
             generateNums();
-            req.setAttribute("arr",generatedSeq);
+            String tmpstr = arrToStr();
+            req.setAttribute("arr",tmpstr);
             req.getRequestDispatcher("/WEB-INF/view/BubbleSort.jsp").forward(req,resp);
         }
 
@@ -40,31 +36,33 @@ public class BasicServlet extends HttpServlet {
 
     }
 
-    private int[] convertStrToInt(){
-        String strArr[] = generatedSeq.split(", ");
-        int numArr[] = new int[strArr.length];
-        for (int i = 0; i < strArr.length; i++) {
-            numArr[i] = Integer.parseInt(strArr[i]);
-            // System.out.println(numArr[i]);
+    public String arrToStr(){
+        String str = "";
+        for(int i = 0; i<N; i++){
+            if(i!=N-1){
+                str += generatedSeq[i] + ", ";
+            }else {
+                str += generatedSeq[i];
+            }
         }
-        return numArr;
+        return str;
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException { //обрабатываем post запрос из submit
         generateNums();
-        req.setAttribute("arr",generatedSeq);   //Задаём новые значения
+        String str2 = arrToStr();      //Конвертируем строку в массив с типом int
+        req.setAttribute("arr",str2);   //Задаём новые значения
         bubbleSortApp a = new bubbleSortApp();     //Создаём объект класса bubbleSortApp для получения доступа к bubblesort()
 
-        int[] numsArr = convertStrToInt();      //Конвертируем строку в массив с типом int
-
-        generatedSeq = a.bubble_sort(numsArr,10); //Cортируем значения и результат сохраняем
+        String str = a.bubble_sort(generatedSeq,N); //Cортируем значения и результат сохраняем
+        System.out.println(str);
         try {
-            a.insertIntoTable(generatedSeq);
+            a.insertIntoTable(str);
         } catch (SQLException e) {
             e.getMessage();
         }
-        req.setAttribute("sortedarr",generatedSeq); //Присваеваем результат по ссылке sortedarr в JSP
+        req.setAttribute("sortedarr",str); //Присваеваем результат по ссылке sortedarr в JSP
         req.getRequestDispatcher("/WEB-INF/view/BubbleSort.jsp").forward(req,resp); //Направляем запрос на этот же сервлет для генерерации и сортировки новых значений
     }
 }
