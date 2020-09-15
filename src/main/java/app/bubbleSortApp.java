@@ -1,125 +1,87 @@
 package app;
 
 import java.sql.*;
-import java.util.Scanner;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class bubbleSortApp {
-    private static final String URL = "jdbc:postgresql://127.0.0.1:5432/bubbleSort_db"; //Адрес БД
-    //Данные пользователя
-    private static final String USERNAME = "postgres";              //Логин
-    private static final String PASSWORD = "postgres";              //Пароль
-    private static final String DRIVER = "org.postgresql.Driver";   //путь к JDBC драйверу
 
-    private static Connection conn = null;
-    private static Statement statement = null;
+    public static class bubbleSort {
 
-    private static Connection getDBConnection(){            //Подключение к БД
-        Connection conn = null;
-        try {
-            Class.forName(DRIVER);
-        } catch (ClassNotFoundException e) {
-            System.out.println(e.getMessage());
+        private ArrayList<Integer> list = new ArrayList<>();
+        private int N = 10;
+
+        private void setList(ArrayList<Integer> list){
+            this.list = list;
         }
-        try {
-            conn = DriverManager.getConnection(URL,USERNAME, PASSWORD);
-            System.out.println("Соединение с "+ URL + " установлено");
-            return conn;
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            System.out.println("Соединение с "+ URL + "не установлено");
+
+        private ArrayList<Integer> getList(){
+            return list;
         }
-        return conn;
-    }
 
-    private static void createDbUserTable() throws SQLException{            //Создание таблицы в БД
-
-        String createTableSql = "CREATE TABLE sort_results("
-                +"id INT NOT NULL GENERATED ALWAYS AS IDENTITY PRIMARY KEY,"
-                +"result VARCHAR(100) NOT NULL"
-                +")";
-
-        try {
-            conn = getDBConnection();
-            statement = conn.createStatement();
-
-            //Start SQL query
-            statement.execute(createTableSql);
-            System.out.println("Таблица \"sort_results\" была успешно создана.");
-        }catch (SQLException e){
-            System.out.println(e.getMessage());
-        }finally {
-            if(statement != null) {
-                statement.close();
-            }if(conn != null){
-                conn.close();
+        private ArrayList<Integer> generateArrElems(){    //Генерация значений массива в диапазоне: 1..100
+            final Random random = new Random();
+            ArrayList<Integer> TMPlist = new ArrayList<>();
+            for(int i = 0; i<N; i++) {
+                TMPlist.add(i,random.nextInt(100)+1);
             }
+            return TMPlist;
         }
-    }
 
-    public static void insertIntoTable(String sortedNums) throws SQLException {             //Добавляем значение в созданную таблицу
-
-        String InsertSortedNums = "INSERT INTO sort_results(result) VALUES ((?))";
-
-        try {
-            conn = getDBConnection();
-            PreparedStatement statement = conn.prepareStatement(InsertSortedNums);
-            statement.setString(1,sortedNums);
-            //Start SQL query
-            statement.executeUpdate();
-            System.out.println("Данные успешно добавлены в \"sort_results\".");
-        }catch (SQLException e){
-            System.out.println(e.getMessage());
-        }finally {
-            if(statement != null) {
-                statement.close();
-            }if(conn != null){
-                conn.close();
+        private ArrayList<Integer> inArrElems(){
+            Scanner in = new Scanner(System.in);
+            ArrayList<Integer> TMPlist = new ArrayList<>();
+            for(int i = 0; i<N; i++) {
+                TMPlist.add(i,in.nextInt());
             }
+            return TMPlist;
         }
-    }
 
-    public static String bubble_sort(int[] nums, int N) {               //Пузырьковая сортировка
-        StringBuilder sortedNums = new StringBuilder();
-        for (int i=0; i<N-1; i++){
-            for (int j=0; j<N-i-1; j++){
-                if (nums[j] > nums[j+1]){
-                    int tmp = nums[j];
-                    nums[j] = nums[j+1];
-                    nums[j+1] = tmp;
+        public void bubble_sort() {                     //Пузырьковая сортировка
+            for (int i=0; i<list.size()-1; i++) {
+                for (int j = 0; j< list.size()-i-1; j++) {
+                    if (list.get(j) > list.get(j+1)) {
+                        int tmp = list.get(j);
+                        list.set(j,list.get(j+1));
+                        list.set((j+1),tmp);
+                    }
                 }
             }
         }
-        for (int i=0; i<N; i++){
-            if (i==N-1)
-            {
-                sortedNums.append(nums[i]);
-            }else{
-                sortedNums.append(nums[i]).append(", ");
-            }
+
+        public String listToStr(){
+            List<String> strings = list.stream().map(Object::toString).collect(Collectors.toList());
+            String[] myArray = strings.toArray(new String[N]);
+            return String.join(", ", myArray);
+
         }
-        return sortedNums.toString();
     }
 
-    public static void main(String[] args) {
-        Scanner in = new Scanner(System.in);
-        int N;                                                              //Количество элементов в массиве
-        System.out.print("Сколько всего элементов в массиве? >> ");
-        N = in.nextInt();
 
-        int[] nums = new int[N];
-        System.out.print("Введите элементы массива >>\n");
-        for (int i=0; i<N; i++){
-            nums[i] = in.nextInt();
+    public static void main(String[] args) {
+        ArrayList<Integer> models;
+        bubbleSort obj = new bubbleSort();
+        //DB object_db  = new DB();
+
+        obj.setList(obj.generateArrElems());
+        obj.bubble_sort();
+        models = obj.getList();
+
+        for(int i =0; i<models.size(); i++){
+            System.out.println(models.get(i));
         }
 
-        String sortedNums = bubble_sort(nums,N);
-        System.out.print("Отсортированнный массив: " + sortedNums + "\n");
+        System.out.println(models);
+        System.out.println(obj.listToStr());
 
-        try {
-            //createDbUserTable();
-            insertIntoTable(sortedNums);
+        /*try {
+            //object_db.createDbUserTable();
+            object_db.insertIntoTable(sortedNums);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
-        }
+        }*/
     }
 }

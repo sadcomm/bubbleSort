@@ -6,20 +6,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Random;
+
 
 public class BasicServlet extends HttpServlet {
-
-    final Random random = new Random();
-    private int N = 10;
-    private int[] generatedSeq = new int[N];
-
-    public void generateNums(){            //Генерируем значения для исходного массива
-        for(int i = 0; i<N; i++)
-        {
-            generatedSeq[i] = random.nextInt(100)+1;
-        }
-    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException { //Обрабатываем Get запрос
@@ -51,6 +40,7 @@ public class BasicServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException { //обрабатываем post запрос из submit
         generateNums();
+        DB object_db  = new DB();
         String str2 = arrToStr();      //Конвертируем строку в массив с типом int
         req.setAttribute("arr",str2);   //Задаём новые значения
         bubbleSortApp a = new bubbleSortApp();     //Создаём объект класса bubbleSortApp для получения доступа к bubblesort()
@@ -58,7 +48,7 @@ public class BasicServlet extends HttpServlet {
         String str = a.bubble_sort(generatedSeq,N); //Cортируем значения и результат сохраняем
         System.out.println(str);
         try {
-            a.insertIntoTable(str);
+            object_db.insertIntoTable(str);
         } catch (SQLException e) {
             e.getMessage();
         }
