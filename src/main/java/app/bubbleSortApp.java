@@ -9,8 +9,6 @@ import java.util.stream.Collectors;
 
 public class bubbleSortApp {
 
-    public static class bubbleSort {
-
         private ArrayList<Integer> list = new ArrayList<>();
         private int N = 10;
 
@@ -18,11 +16,11 @@ public class bubbleSortApp {
             this.list = list;
         }
 
-        private ArrayList<Integer> getList(){
+        public ArrayList<Integer> getList(){
             return list;
         }
 
-        private ArrayList<Integer> generateArrElems(){    //Генерация значений массива в диапазоне: 1..100
+        public ArrayList<Integer> generateArrElems(){    //Генерация значений массива в диапазоне: 1..100
             final Random random = new Random();
             ArrayList<Integer> TMPlist = new ArrayList<>();
             for(int i = 0; i<N; i++) {
@@ -58,24 +56,22 @@ public class bubbleSortApp {
             return String.join(", ", myArray);
 
         }
-    }
 
 
-    public static void main(String[] args) {
+    public void main(String[] args) {
         ArrayList<Integer> models;
-        bubbleSort obj = new bubbleSort();
         //DB object_db  = new DB();
 
-        obj.setList(obj.generateArrElems());
-        obj.bubble_sort();
-        models = obj.getList();
+        setList(generateArrElems());
+        bubble_sort();
+        models = getList();
 
         for(int i =0; i<models.size(); i++){
             System.out.println(models.get(i));
         }
 
         System.out.println(models);
-        System.out.println(obj.listToStr());
+        System.out.println(listToStr());
 
         /*try {
             //object_db.createDbUserTable();

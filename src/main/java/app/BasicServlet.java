@@ -15,8 +15,9 @@ public class BasicServlet extends HttpServlet {
         String url = req.getRequestURI();
         System.out.println("URL is: " + url);
         if(url.equals("/BubbleSort")){
-            generateNums();
-            String tmpstr = arrToStr();
+            bubbleSortApp sortObj = new bubbleSortApp();
+            sortObj.generateArrElems();
+            String tmpstr = sortObj.listToStr();
             req.setAttribute("arr",tmpstr);
             req.getRequestDispatcher("/WEB-INF/view/BubbleSort.jsp").forward(req,resp);
         }
@@ -25,30 +26,19 @@ public class BasicServlet extends HttpServlet {
 
     }
 
-    public String arrToStr(){
-        String str = "";
-        for(int i = 0; i<N; i++){
-            if(i!=N-1){
-                str += generatedSeq[i] + ", ";
-            }else {
-                str += generatedSeq[i];
-            }
-        }
-        return str;
-    }
-
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException { //обрабатываем post запрос из submit
-        generateNums();
-        DB object_db  = new DB();
-        String str2 = arrToStr();      //Конвертируем строку в массив с типом int
+        bubbleSortApp sortObj = new bubbleSortApp();
+        sortObj.generateArrElems();
+        String str2 = sortObj.listToStr();      //Конвертируем строку в массив с типом int
         req.setAttribute("arr",str2);   //Задаём новые значения
         bubbleSortApp a = new bubbleSortApp();     //Создаём объект класса bubbleSortApp для получения доступа к bubblesort()
 
-        String str = a.bubble_sort(generatedSeq,N); //Cортируем значения и результат сохраняем
+        sortObj.bubble_sort();
+        String str = sortObj.listToStr();
         System.out.println(str);
         try {
-            object_db.insertIntoTable(str);
+            DB.insertIntoTable(str);
         } catch (SQLException e) {
             e.getMessage();
         }
