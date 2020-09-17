@@ -6,7 +6,7 @@ public class DB {
     private static final String URL = "jdbc:postgresql://127.0.0.1:5432/bubbleSort_db"; //Адрес БД
     //Данные пользователя
     private static final String USERNAME = "postgres";              //Логин
-    private static final String PASSWORD = "postgres";              //Пароль
+    private static final String PASSWORD = "evgenhalk1999";              //Пароль
     private static final String DRIVER = "org.postgresql.Driver";   //путь к JDBC драйверу
 
     private static Connection conn = null;

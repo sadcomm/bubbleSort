@@ -12,10 +12,9 @@ public class bubbleSortApp {
         private ArrayList<Integer> list = new ArrayList<>();
         private int N = 10;
 
-        private void setList(ArrayList<Integer> list){
+        public void setList(ArrayList<Integer> list){
             this.list = list;
         }
-
         public ArrayList<Integer> getList(){
             return list;
         }
@@ -57,27 +56,32 @@ public class bubbleSortApp {
 
         }
 
+        public String[] listToStrArr(){
+            List<String> strings = list.stream().map(Object::toString).collect(Collectors.toList());
+            String[] myArray = strings.toArray(new String[N]);
+            return myArray;
 
-    public void main(String[] args) {
-        ArrayList<Integer> models;
-        //DB object_db  = new DB();
-
-        setList(generateArrElems());
-        bubble_sort();
-        models = getList();
-
-        for(int i =0; i<models.size(); i++){
-            System.out.println(models.get(i));
         }
 
-        System.out.println(models);
-        System.out.println(listToStr());
+        public void main(String[] args) {
+            ArrayList<Integer> models;
+            //DB object_db  = new DB();
 
-        /*try {
-            //object_db.createDbUserTable();
-            object_db.insertIntoTable(sortedNums);
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }*/
-    }
+            setList(generateArrElems());
+            bubble_sort();
+            models = getList();
+            for (int i : models){
+                System.out.println(i);
+            }
+
+            System.out.println(models);
+            System.out.println(listToStr());
+
+            /*try {
+                //object_db.createDbUserTable();
+                object_db.insertIntoTable(sortedNums);
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }*/
+        }
 }

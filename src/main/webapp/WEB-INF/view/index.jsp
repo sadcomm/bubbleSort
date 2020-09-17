@@ -12,6 +12,6 @@
     <link href="/resources/style.css" rel="stylesheet">
 </head>
 <body>
-    <h1>Bubble Sort</h1>
+    <h1>Index</h1>
 </body>
 </html>
